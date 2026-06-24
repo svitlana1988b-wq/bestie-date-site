@@ -2,120 +2,88 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<title>Питання</title>
+<title>Вибір</title>
 
 <style>
-body{
-    margin:0;
-    height:100vh;
-    background:#fff0f5;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-family:Arial, sans-serif;
+body {
+    background: #fff0f5;
+    font-family: Arial;
+    text-align: center;
+    padding-top: 100px;
+    overflow: hidden;
 }
 
-.card{
-    text-align:center;
+h1 {
+    margin-bottom: 50px;
 }
 
-h1{
-    font-size:34px;
-    font-weight:800;
-    margin-bottom:20px;
+button {
+    padding: 20px 40px;
+    margin: 20px;
+    font-size: 22px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+    position: relative;
 }
 
-.buttons{
-    display:flex;
-    gap:20px;
-    justify-content:center;
+#yes {
+    background: #ff4d88;
+    color: white;
+    transform: scale(1);
 }
 
-/* кнопки */
-button{
-    font-size:20px;
-    padding:15px 30px;
-    border:none;
-    border-radius:15px;
-    cursor:pointer;
-    transition:0.2s;
-}
-
-#yes{
-    background:#ff6fae;
-    color:white;
-}
-
-#no{
-    background:#ccc;
-}
-
-#msg{
-    margin-top:15px;
-    color:#d44;
-    min-height:20px;
+#no {
+    background: #ccc;
+    color: black;
+    transform: scale(1);
 }
 </style>
-
 </head>
 
 <body>
 
-<div class="card">
+<h1>Ти підеш зі мною гуляти? 💖</h1>
 
-    <h1>Підемо гуляти? 💖</h1>
-
-    <div class="buttons">
-        <button id="yes" onclick="growYes()">Так</button>
-        <button id="no" onclick="pressNo()">Ні</button>
-    </div>
-
-    <div id="msg"></div>
-
-</div>
+<button id="yes" onclick="goYes()">ТАК 💖</button>
+<button id="no" onclick="pressNo()">НІ</button>
 
 <script>
 
 let yesScale = 1;
-let noClicks = 0;
+let noScale = 1;
+let noOffset = 0;
+let locked = false;
 
-function growYes(){
+function pressNo() {
 
-    yesScale += 0.5;
+    if (locked) return;
 
-    let btn = document.getElementById("yes");
+    // НІ зменшується і "тікає" вліво
+    noScale -= 0.05;
+    noOffset -= 10;
 
-    btn.style.transform = `scale(${yesScale})`;
+    // ТАК збільшується
+    yesScale += 0.08;
 
-    // коли дуже велика — переходимо далі
-    if(yesScale >= 3){
-        window.location.href = "page3.html";
-    }
+    // обмеження щоб не зламалось
+    if (noScale < 0.3) noScale = 0.3;
+    if (yesScale > 2.5) yesScale = 2.5;
+
+    document.getElementById("no").style.transform =
+        scale(${noScale}) translateX(${noOffset}px);
+
+    document.getElementById("yes").style.transform =
+        scale(${yesScale});
 }
 
-function pressNo(){
+function goYes() {
 
-    noClicks++;
+    locked = true;
 
-    let msg = document.getElementById("msg");
-
-    let texts = [
-        "Ти точно впевнена? 🥺",
-        "Подумай ще раз…",
-        "Справді ні? 😢",
-        "Останній шанс…"
-    ];
-
-    if(noClicks <= texts.length){
-        msg.innerText = texts[noClicks - 1];
-    } else {
-        msg.innerText = "Ти тиснеш не туди 😌";
-    }
-
-    // 💖 головний ефект: “Ні” збільшує “Так”
-    yesScale += 0.6;
-
-    document.getElementById("yes").style.transform = `scale(${yesScale})`;
+    // перекидає на 3 сторінку
+    window.location.href = "page3.html";
 }
 
 </script>

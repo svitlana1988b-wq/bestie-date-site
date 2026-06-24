@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Secret</title>
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    background:#fff0f5;
+    display:flex;
+    font-family:Arial, sans-serif;
+}
+
+/* ЛІВА */
+.left{
+    flex:1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.left img{
+    width:70%;
+    max-width:360px;
+    border-radius:20px;
+}
+
+/* ПРАВА */
+.right{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:15px;
+}
+
+.title{
+    font-size:22px;
+}
+
+.hearts img{
+    width:32px;
+}
+
+.msg{
+    color:#d44;
+    height:20px;
+}
+
+/* клавіатура */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(3,95px);
+    gap:12px;
+}
+
+.key{
+    width:95px;
+    height:95px;
+    cursor:pointer;
+}
+
+.zero{ grid-column:2; }
+
+.ac{ grid-column:3; }
+
+</style>
+</head>
+
+<body>
+
+<div class="left">
+    <img src="photo.jpg">
+</div>
+
+<div class="right">
+
+    <div class="title">Введи пароль 💖</div>
+
+    <div class="hearts">
+        <img src="empty.png">
+        <img src="empty.png">
+        <img src="empty.png">
+        <img src="empty.png">
+    </div>
+
+    <div class="msg" id="msg"></div>
+
+    <div class="grid">
+
+        <img class="key" src="1.png" onclick="press('1')">
+        <img class="key" src="2.png" onclick="press('2')">
+        <img class="key" src="3.png" onclick="press('3')">
+
+        <img class="key" src="4.png" onclick="press('4')">
+        <img class="key" src="5.png" onclick="press('5')">
+        <img class="key" src="6.png" onclick="press('6')">
+
+        <img class="key" src="7.png" onclick="press('7')">
+        <img class="key" src="8.png" onclick="press('8')">
+        <img class="key" src="9.png" onclick="press('9')">
+
+        <div></div>
+        <img class="key zero" src="0.png" onclick="press('0')">
+        <img class="key ac" src="AC.png" onclick="clearAll()">
+
+    </div>
+
+</div>
+
+<script>
+
+let pin = "";
+
+function press(num){
+
+    if(pin.length >= 4) return;
+
+    pin += num;
+    updateHearts();
+
+    if(pin.length === 4){
+        check();
+    }
+}
+
+function updateHearts(){
+
+    let hearts = document.querySelectorAll(".hearts img");
+
+    for(let i=0;i<4;i++){
+        hearts[i].src = i < pin.length ? "full.png" : "empty.png";
+    }
+}
+
+function clearAll(){
+    pin = "";
+    document.getElementById("msg").innerText = "";
+    updateHearts();
+}
+
+function check(){
+
+    if(pin === "0612"){
+        window.location.href = "page2.html";
+    } else {
+        document.getElementById("msg").innerText = "Неправильний пароль";
+        setTimeout(clearAll, 800);
+    }
+}
+
+</script>
+
+</body>
+</html>

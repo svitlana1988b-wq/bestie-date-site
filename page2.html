@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Питання</title>
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    background:#fff0f5;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:Arial, sans-serif;
+}
+
+.card{
+    text-align:center;
+}
+
+h1{
+    font-size:34px;
+    font-weight:800;
+    margin-bottom:20px;
+}
+
+.buttons{
+    display:flex;
+    gap:20px;
+    justify-content:center;
+}
+
+/* кнопки */
+button{
+    font-size:20px;
+    padding:15px 30px;
+    border:none;
+    border-radius:15px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+#yes{
+    background:#ff6fae;
+    color:white;
+}
+
+#no{
+    background:#ccc;
+}
+
+#msg{
+    margin-top:15px;
+    color:#d44;
+    min-height:20px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+    <h1>Підемо гуляти? 💖</h1>
+
+    <div class="buttons">
+        <button id="yes" onclick="growYes()">Так</button>
+        <button id="no" onclick="pressNo()">Ні</button>
+    </div>
+
+    <div id="msg"></div>
+
+</div>
+
+<script>
+
+let yesScale = 1;
+let noClicks = 0;
+
+function growYes(){
+
+    yesScale += 0.5;
+
+    let btn = document.getElementById("yes");
+
+    btn.style.transform = `scale(${yesScale})`;
+
+    // коли дуже велика — переходимо далі
+    if(yesScale >= 3){
+        window.location.href = "page3.html";
+    }
+}
+
+function pressNo(){
+
+    noClicks++;
+
+    let msg = document.getElementById("msg");
+
+    let texts = [
+        "Ти точно впевнена? 🥺",
+        "Подумай ще раз…",
+        "Справді ні? 😢",
+        "Останній шанс…"
+    ];
+
+    if(noClicks <= texts.length){
+        msg.innerText = texts[noClicks - 1];
+    } else {
+        msg.innerText = "Ти тиснеш не туди 😌";
+    }
+
+    // 💖 головний ефект: “Ні” збільшує “Так”
+    yesScale += 0.6;
+
+    document.getElementById("yes").style.transform = `scale(${yesScale})`;
+}
+
+</script>
+
+</body>
+</html>

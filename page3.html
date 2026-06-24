@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Домовимось</title>
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    background:#fff0f5;
+    font-family:Arial, sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.card{
+    background:white;
+    padding:35px;
+    border-radius:25px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.15);
+    width:340px;
+    text-align:center;
+}
+
+h1{
+    font-size:26px;
+    font-weight:800;
+    margin-bottom:20px;
+}
+
+/* кнопки */
+button{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.option{
+    background:#ffe0ec;
+}
+
+.option:hover{
+    transform:scale(1.03);
+    background:#ffbfd7;
+}
+
+#final{
+    background:#ff6fae;
+    color:white;
+    font-weight:bold;
+    font-size:18px;
+    margin-top:10px;
+}
+
+#msg{
+    margin-top:15px;
+    font-size:20px;
+    color:#d44;
+    background: #ffe0ec;
+    padding:10px;
+    border-radius:12px;
+}
+
+/* МОДАЛКИ */
+.modal{
+    display:none;
+    position:fixed;
+    top:0; left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.4);
+    justify-content:center;
+    align-items:center;
+}
+
+.modal-content{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    width:300px;
+}
+
+/* календарик */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:5px;
+}
+
+.day{
+    padding:8px;
+    background:#ffe0ec;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.day:hover{
+    background:#ff6fae;
+    color:white;
+}
+
+/* час */
+.time{
+    padding:10px;
+    margin:5px;
+    background:#ffe0ec;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.time:hover{
+    background:#ff6fae;
+    color:white;
+}
+
+.close{
+    margin-top:10px;
+    background:#ccc;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+    <h1>Домовимось 💖</h1>
+
+    <button class="option" onclick="openDate()">📅 Обрати день</button>
+    <button class="option" onclick="openTime()">⏰ Обрати час</button>
+    <button class="option" onclick="choosePlace()">📍 Обрати місце</button>
+
+    <button id="final" onclick="finish()">ПІДТВЕРДИТИ</button>
+
+    <div id="msg"></div>
+
+</div>
+
+<!-- 📅 КАЛЕНДАР -->
+<div class="modal" id="dateModal">
+    <div class="modal-content">
+        <h3>Вибери день</h3>
+        <div class="grid" id="calendar"></div>
+        <button class="close" onclick="closeDate()">Закрити</button>
+    </div>
+</div>
+
+<!-- ⏰ ЧАС -->
+<div class="modal" id="timeModal">
+    <div class="modal-content">
+        <h3>Вибери час</h3>
+        <div id="timeList"></div>
+        <button class="close" onclick="closeTime()">Закрити</button>
+    </div>
+</div>
+
+<script>
+
+let date = "";
+let time = "";
+let place = "";
+
+function openDate(){
+
+    let cal = document.getElementById("calendar");
+    cal.innerHTML = "";
+
+    for(let i=1;i<=30;i++){
+        let d = document.createElement("div");
+        d.className = "day";
+        d.innerText = i;
+
+        d.onclick = () => {
+            date = i;
+            document.getElementById("msg").innerText = "Обрано день: " + date;
+            closeDate();
+        };
+
+        cal.appendChild(d);
+    }
+
+    document.getElementById("dateModal").style.display = "flex";
+}
+
+function closeDate(){
+    document.getElementById("dateModal").style.display = "none";
+}
+
+function openTime(){
+
+    let list = document.getElementById("timeList");
+
+    let times = ["14:00","15:00","16:00","17:00","18:00"];
+    list.innerHTML = "";
+
+    times.forEach(t => {
+
+        let el = document.createElement("div");
+        el.className = "time";
+        el.innerText = t;
+
+        el.onclick = () => {
+            time = t;
+            document.getElementById("msg").innerText = "Обрано час: " + time;
+            closeTime();
+        };
+
+        list.appendChild(el);
+    });
+
+    document.getElementById("timeModal").style.display = "flex";
+}
+
+function closeTime(){
+    document.getElementById("timeModal").style.display = "none";
+}
+
+function choosePlace(){
+
+    let places = [
+        "🌳 Каштани",
+        "🏙 Центр",
+        "🏭 Біля маслозаводу",
+        "🚪 Під під'їздом"
+    ];
+
+    place = places[Math.floor(Math.random() * places.length)];
+
+    document.getElementById("msg").innerText =
+    "Місце: " + place;
+}
+
+function finish(){
+
+    if(date && time && place){
+
+        document.body.innerHTML = `
+        <div style="text-align:center;">
+            <h1>Домовились 💖</h1>
+            <p>📅 ${date}</p>
+            <p>⏰ ${time}</p>
+            <p>📍 ${place}</p>
+            <h2> Hehe)) it's my girl💋
+                See you, baby </h2>
+        </div>
+        `;
+
+    } else {
+        document.getElementById("msg").innerText =
+        "Заповни все 🥺";
+    }
+}
+
+</script>
+
+</body>
+</html>

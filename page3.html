@@ -2,167 +2,258 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<title>Зустріч</title>
+<title>Домовимось</title>
 
 <style>
-body {
-    background: #fff0f5;
-    font-family: Arial;
-    text-align: center;
-    padding: 20px;
+body{
+    margin:0;
+    height:100vh;
+    background:#fff0f5;
+    font-family:Arial, sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
 
-h1 {
-    margin-bottom: 20px;
+.card{
+    background:white;
+    padding:35px;
+    border-radius:25px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.15);
+    width:340px;
+    text-align:center;
 }
 
-.section {
-    margin: 25px 0;
+h1{
+    font-size:26px;
+    font-weight:800;
+    margin-bottom:20px;
 }
 
-.option {
-    padding: 10px 14px;
-    margin: 5px;
-    border: none;
-    border-radius: 10px;
-    background: #ffd1dc;
-    cursor: pointer;
+/* кнопки */
+button{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.2s;
 }
 
-.option.active {
-    background: #ff4d88;
-    color: white;
+.option{
+    background:#ffe0ec;
 }
 
-#status {
-    margin-top: 20px;
-    font-size: 16px;
+.option:hover{
+    transform:scale(1.03);
+    background:#ffbfd7;
 }
 
-#confirm {
-    margin-top: 25px;
-    padding: 15px 25px;
-    font-size: 18px;
-    background: #ff4d88;
-    color: white;
-    border: none;
-    border-radius: 12px;
+#final{
+    background:#ff6fae;
+    color:white;
+    font-weight:bold;
+    font-size:18px;
+    margin-top:10px;
+}
+
+#msg{
+    margin-top:12px;
+    font-size:14px;
+    color:#d44;
+}
+
+/* МОДАЛКИ */
+.modal{
+    display:none;
+    position:fixed;
+    top:0; left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.4);
+    justify-content:center;
+    align-items:center;
+}
+
+.modal-content{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    width:300px;
+}
+
+/* календарик */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:5px;
+}
+
+.day{
+    padding:8px;
+    background:#ffe0ec;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.day:hover{
+    background:#ff6fae;
+    color:white;
+}
+
+/* час */
+.time{
+    padding:10px;
+    margin:5px;
+    background:#ffe0ec;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.time:hover{
+    background:#ff6fae;
+    color:white;
+}
+
+.close{
+    margin-top:10px;
+    background:#ccc;
 }
 </style>
+
 </head>
 
 <body>
 
-<h1>Обери зустріч 💖</h1>
+<div class="card">
 
-<div class="section">
-<h3>Дата</h3>
-<div id="dates"></div>
+    <h1>Домовимось 💖</h1>
+
+    <button class="option" onclick="openDate()">📅 Обрати день</button>
+    <button class="option" onclick="openTime()">⏰ Обрати час</button>
+    <button class="option" onclick="choosePlace()">📍 Обрати місце</button>
+
+    <button id="final" onclick="finish()">ПІДТВЕРДИТИ</button>
+
+    <div id="msg"></div>
+
 </div>
 
-<div class="section">
-<h3>Час</h3>
-<button class="option" onclick="setTime(this,'12:00')">12:00</button>
-<button class="option" onclick="setTime(this,'14:00')">14:00</button>
-<button class="option" onclick="setTime(this,'16:00')">16:00</button>
-<button class="option" onclick="setTime(this,'18:00')">18:00</button>
+<!-- 📅 КАЛЕНДАР -->
+<div class="modal" id="dateModal">
+    <div class="modal-content">
+        <h3>Вибери день</h3>
+        <div class="grid" id="calendar"></div>
+        <button class="close" onclick="closeDate()">Закрити</button>
+    </div>
 </div>
 
-<div class="section">
-<h3>Місце</h3>
-<button class="option" onclick="setPlace(this,'Каштани')">Каштани</button>
-<button class="option" onclick="setPlace(this,'Центр')">Центр</button>
-<button class="option" onclick="setPlace(this,'Парк')">Парк</button>
+<!-- ⏰ ЧАС -->
+<div class="modal" id="timeModal">
+    <div class="modal-content">
+        <h3>Вибери час</h3>
+        <div id="timeList"></div>
+        <button class="close" onclick="closeTime()">Закрити</button>
+    </div>
 </div>
-
-<div id="status">
-Дата: —<br>
-Час: —<br>
-Місце: —
-</div>
-
-<button id="confirm" onclick="finish()">Підтвердити 💌</button>
 
 <script>
 
-let selectedDate = "";
-let selectedTime = "";
-let selectedPlace = "";
+let date = "";
+let time = "";
+let place = "";
 
-function generateDates() {
-    let container = document.getElementById("dates");
+function openDate(){
 
-    let today = new Date();
+    let cal = document.getElementById("calendar");
+    cal.innerHTML = "";
 
-    for (let i = 0; i < 14; i++) {
-        let d = new Date();
-        d.setDate(today.getDate() + i);
+    for(let i=1;i<=30;i++){
+        let d = document.createElement("div");
+        d.className = "day";
+        d.innerText = i;
 
-        let day = d.getDate() + "." + (d.getMonth()+1);
-
-        let btn = document.createElement("button");
-        btn.innerText = day;
-        btn.className = "option";
-
-        btn.onclick = function() {
-            setDate(this, day);
+        d.onclick = () => {
+            date = i;
+            document.getElementById("msg").innerText = "Обрано день: " + date;
+            closeDate();
         };
 
-        container.appendChild(btn);
-    }
-}
-
-function setDate(el, value) {
-    selectedDate = value;
-    highlight(el);
-    update();
-}
-
-function setTime(el, value) {
-    selectedTime = value;
-    highlight(el);
-    update();
-}
-
-function setPlace(el, value) {
-    selectedPlace = value;
-    highlight(el);
-    update();
-}
-
-function highlight(el) {
-    let group = el.parentElement.querySelectorAll("button");
-    group.forEach(b => b.classList.remove("active"));
-    el.classList.add("active");
-}
-
-function update() {
-    document.getElementById("status").innerHTML =
-        "Дата: " + (selectedDate || "—") + "<br>" +
-        "Час: " + (selectedTime || "—") + "<br>" +
-        "Місце: " + (selectedPlace || "—");
-}
-
-function finish() {
-
-    if (!selectedDate  !selectedTime  !selectedPlace) {
-        alert("Спочатку обери все 💖");
-        return;
+        cal.appendChild(d);
     }
 
-    fetch("https://script.google.com/macros/s/AKfycbxeuKOiX_QmFLkwGrOUOVLeO1OHgDZHtuV1zc7iDR85zcuscTLd46Y5Tjv_JQfVj4w9uA/exec", {
-        method: "POST",
-        body: JSON.stringify({
-            date: selectedDate,
-            time: selectedTime,
-            place: selectedPlace
-        })
+    document.getElementById("dateModal").style.display = "flex";
+}
+
+function closeDate(){
+    document.getElementById("dateModal").style.display = "none";
+}
+
+function openTime(){
+
+    let list = document.getElementById("timeList");
+
+    let times = ["14:00","15:00","16:00","17:00","18:00"];
+    list.innerHTML = "";
+
+    times.forEach(t => {
+
+        let el = document.createElement("div");
+        el.className = "time";
+        el.innerText = t;
+
+        el.onclick = () => {
+            time = t;
+            document.getElementById("msg").innerText = "Обрано час: " + time;
+            closeTime();
+        };
+
+        list.appendChild(el);
     });
 
-    alert("Відправлено 💖");
+    document.getElementById("timeModal").style.display = "flex";
 }
 
-generateDates();
+function closeTime(){
+    document.getElementById("timeModal").style.display = "none";
+}
+
+function choosePlace(){
+
+    let places = [
+        "🌳 Каштани",
+        "🏙 Центр",
+        "🏭 Біля маслозаводу",
+        "🚪 Під під'їздом"
+    ];
+
+    place = places[Math.floor(Math.random() * places.length)];
+
+    document.getElementById("msg").innerText =
+    "Місце: " + place;
+}
+
+function finish(){
+
+    if(date && time && place){
+
+        document.body.innerHTML = `
+        <div style="text-align:center;">
+            <h1>Hehe)) it's my girl💋</h1>
+            <p>📅 ${date}</p>
+            <p>⏰ ${time}</p>
+            <p>📍 ${place}</p>
+            <h2>See you, baby</h2>
+        </div>
+        `;
+
+    } else {
+        document.getElementById("msg").innerText =
+        "Заповни все 🥺";
+    }
+}
 
 </script>
 
